@@ -85,8 +85,8 @@ async function uploadFile(file) {
     // Cargar datos de paneles
     await loadPanels();
 
-    // Cargar imagen térmica
-    await loadThermalImage(data.imageUrl);
+    // Crear visualización directa (sin imagen externa)
+    createThermalVisualization();
 
     // Actualizar estadísticas
     updateStats(data);
@@ -116,6 +116,48 @@ async function loadPanels() {
     console.error('Error cargando paneles:', error);
     throw error;
   }
+}
+
+function createThermalVisualization() {
+  if (!panelData) return;
+
+  // Crear canvas
+  canvas = document.getElementById('thermalCanvas');
+  ctx = canvas.getContext('2d');
+
+  // Dimensionar canvas
+  const panelsPerRow = 59;
+  const panelSize = 17;
+  canvas.width = panelsPerRow * panelSize;
+  canvas.height = panelsPerRow * panelSize;
+
+  // Dibujar fondo
+  ctx.fillStyle = '#f0f0f0';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Dibujar paneles
+  panelData.forEach(panel => {
+    const color = getThermalColor(panel.tempAvg);
+    ctx.fillStyle = color;
+    ctx.fillRect(panel.x, panel.y, panel.width, panel.height);
+
+    // Borde
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(panel.x, panel.y, panel.width, panel.height);
+  });
+
+  // Mostrar canvas
+  canvas.style.display = 'block';
+  viewerContainer.innerHTML = '';
+  viewerContainer.appendChild(canvas);
+
+  // Event listeners
+  canvas.addEventListener('mousemove', handleCanvasMouseMove);
+  canvas.addEventListener('click', handleCanvasClick);
+  canvas.addEventListener('mouseleave', handleCanvasMouseLeave);
+
+  console.log(`Canvas creado: ${canvas.width}x${canvas.height}`);
 }
 
 async function loadThermalImage(imageUrl) {
