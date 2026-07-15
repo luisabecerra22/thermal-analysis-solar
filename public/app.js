@@ -376,9 +376,21 @@ function isAnomaly(panel) {
 
 function redrawThermal() {
   if (!ctx || !canvas || !panelData) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.putImageData(imageData, 0, 0);
-  applyThermalOverlay();
+
+  // Limpiar canvas
+  ctx.fillStyle = '#f0f0f0';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Redibujar todos los paneles
+  panelData.forEach(panel => {
+    const color = getThermalColor(panel.tempAvg);
+    ctx.fillStyle = color;
+    ctx.fillRect(panel.x, panel.y, panel.width, panel.height);
+
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(panel.x, panel.y, panel.width, panel.height);
+  });
 }
 
 function redrawThermalWithHighlight(panelId) {
