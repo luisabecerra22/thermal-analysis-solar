@@ -8,10 +8,17 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Crear carpeta de uploads si no existe
+const uploadDir = '/tmp/thermal-uploads';
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 // Middleware
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
-const upload = multer({ dest: '/tmp/thermal-uploads/' });
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb' }));
+const upload = multer({ dest: uploadDir });
 
 // Almacenar datos de paneles en memoria
 let panelData = null;
