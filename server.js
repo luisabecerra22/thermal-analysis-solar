@@ -89,24 +89,36 @@ async function convertTiffToPng(tiffPath) {
 }
 
 // Endpoint: Cargar imagen térmica
-app.post('/api/upload', upload.single('file'), (req, res) => {
+app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
     console.log('=== UPLOAD REQUEST ===');
     console.log('File received:', req.file ? req.file.filename : 'NO FILE');
-    console.log('File size:', req.file ? req.file.size : 'N/A');
 
     if (!req.file) {
-      console.log('ERROR: No file uploaded');
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    console.log('Generating panel data...');
+    const filePath = req.file.path;
+    console.log('Processing TIFF...');
+
+    // Procesar TIFF y convertir a PNG
+    const pngPath = path.join(__dirname, 'public', 'thermal.png');
+    try {
+      await sharp(filePath)
+        .resize(1000, 1000, { fit: 'inside', withoutEnlargement: true })
+        .png()
+        .toFile(pngPath);
+      console.log('TIFF converted to PNG');
+    } catch (e) {
+      console.log('Sharp error (non-critical):', e.message);
+      // Continuar sin imagen si falla
+    }
 
     // Generar datos de paneles (3448 paneles)
     const panels = [];
-    const panelsPerRow = 59; // sqrt(3448) ≈ 59
-    const panelWidth = 16;
-    const panelHeight = 16;
+    const panelsPerRow = 59;
+    const panelWidth = 17;
+    const panelHeight = 17;
 
     for (let panelId = 1; panelId <= 3448; panelId++) {
       const row = Math.floor((panelId - 1) / panelsPerRow);
@@ -121,25 +133,17 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
         height: panelHeight,
         tempAvg,
         tempMin: tempAvg - Math.floor(Math.random() * 3),
-        tempMax: tempAvg + Math.floor(Math.random() * 3),
-        pixelAvg: Math.floor((tempAvg - 20) / 60 * 255)
+        tempMax: tempAvg + Math.floor(Math.random() * 3)
       });
     }
 
     panelData = panels;
     thermalImage = '/thermal.png';
 
-    console.log(`Generated ${panels.length} panels`);
-
     // Limpiar archivo
-    try {
-      fs.unlinkSync(req.file.path);
-      console.log('File cleaned up');
-    } catch (e) {
-      console.log('Cleanup error (non-critical):', e.message);
-    }
+    try { fs.unlinkSync(filePath); } catch (e) {}
 
-    const response = {
+    res.json({
       success: true,
       panelCount: panels.length,
       imageUrl: '/thermal.png',
@@ -148,14 +152,10 @@ app.post('/api/upload', upload.single('file'), (req, res) => {
         minTemp: Math.min(...panels.map(p => p.tempMin)),
         maxTemp: Math.max(...panels.map(p => p.tempMax))
       }
-    };
-
-    console.log('Sending response:', response);
-    res.json(response);
+    });
   } catch (error) {
-    console.error('ERROR in upload:', error.message);
-    console.error('Stack:', error.stack);
-    res.status(500).json({ error: error.message, stack: error.stack });
+    console.error('ERROR:', error.message);
+    res.status(500).json({ error: error.message });
   }
 });
 
