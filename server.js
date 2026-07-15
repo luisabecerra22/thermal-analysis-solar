@@ -249,6 +249,34 @@ app.get('/api/test', (req, res) => {
   res.json({ status: 'OK', message: 'Servidor funcionando' });
 });
 
+// Endpoint: Generar imagen térmica placeholder
+app.get('/thermal.png', async (req, res) => {
+  try {
+    if (!thermalImage) {
+      // Crear una imagen de prueba simple (1000x1000 con colores)
+      const width = 1000;
+      const height = 1000;
+      const png = await sharp({
+        create: {
+          width: width,
+          height: height,
+          channels: 3,
+          background: { r: 50, g: 50, b: 100 }
+        }
+      })
+      .png()
+      .toBuffer();
+
+      res.type('image/png').send(png);
+    } else {
+      res.sendFile(thermalImage);
+    }
+  } catch (error) {
+    console.error('Error generando imagen:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Servir archivo index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
