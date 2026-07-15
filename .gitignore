@@ -1,6 +1,5 @@
 node_modules/
 uploads/
-public/thermal.png
 *.xlsx
 .env
 .env.local
