@@ -104,14 +104,16 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     // Procesar TIFF y convertir a PNG
     const pngPath = path.join(__dirname, 'public', 'thermal.png');
     try {
-      await sharp(filePath)
-        .resize(1000, 1000, { fit: 'inside', withoutEnlargement: true })
-        .png()
+      console.log('Starting TIFF conversion...');
+      await sharp(filePath, { failOnWarning: false })
+        .rotate()
+        .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
+        .png({ compression: 6 })
         .toFile(pngPath);
-      console.log('TIFF converted to PNG');
+      console.log('TIFF converted to PNG successfully');
     } catch (e) {
-      console.log('Sharp error (non-critical):', e.message);
-      // Continuar sin imagen si falla
+      console.log('Sharp conversion error:', e.message);
+      console.log('Will use placeholder PNG');
     }
 
     // Generar datos de paneles (3448 paneles)
