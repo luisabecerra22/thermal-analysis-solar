@@ -89,13 +89,18 @@ async function convertTiffToPng(tiffPath) {
 }
 
 // Endpoint: Cargar imagen térmica
-app.post('/api/upload', upload.single('file'), async (req, res) => {
+app.post('/api/upload', upload.single('file'), (req, res) => {
   try {
+    console.log('=== UPLOAD REQUEST ===');
+    console.log('File received:', req.file ? req.file.filename : 'NO FILE');
+    console.log('File size:', req.file ? req.file.size : 'N/A');
+
     if (!req.file) {
+      console.log('ERROR: No file uploaded');
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    console.log(`Archivo recibido: ${req.file.filename}, size: ${req.file.size}`);
+    console.log('Generating panel data...');
 
     // Generar datos de paneles (3448 paneles)
     const panels = [];
@@ -124,12 +129,17 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     panelData = panels;
     thermalImage = '/thermal.png';
 
+    console.log(`Generated ${panels.length} panels`);
+
     // Limpiar archivo
     try {
       fs.unlinkSync(req.file.path);
-    } catch (e) {}
+      console.log('File cleaned up');
+    } catch (e) {
+      console.log('Cleanup error (non-critical):', e.message);
+    }
 
-    res.json({
+    const response = {
       success: true,
       panelCount: panels.length,
       imageUrl: '/thermal.png',
@@ -138,10 +148,14 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
         minTemp: Math.min(...panels.map(p => p.tempMin)),
         maxTemp: Math.max(...panels.map(p => p.tempMax))
       }
-    });
+    };
+
+    console.log('Sending response:', response);
+    res.json(response);
   } catch (error) {
-    console.error('Error en upload:', error);
-    res.status(500).json({ error: error.message });
+    console.error('ERROR in upload:', error.message);
+    console.error('Stack:', error.stack);
+    res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
 
@@ -228,6 +242,11 @@ app.get('/api/export', async (req, res) => {
     console.error('Error exportando Excel:', error);
     res.status(500).json({ error: error.message });
   }
+});
+
+// Endpoint de prueba
+app.get('/api/test', (req, res) => {
+  res.json({ status: 'OK', message: 'Servidor funcionando' });
 });
 
 // Servir archivo index.html
