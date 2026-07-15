@@ -125,11 +125,10 @@ function createThermalVisualization() {
   canvas = document.getElementById('thermalCanvas');
   ctx = canvas.getContext('2d');
 
-  // Dimensionar canvas
-  const panelsPerRow = 59;
-  const panelSize = 17;
-  canvas.width = panelsPerRow * panelSize;
-  canvas.height = panelsPerRow * panelSize;
+  // Dimensionar canvas al tamaño del contenedor
+  const container = document.getElementById('viewerContainer');
+  canvas.width = Math.max(800, container.clientWidth - 10);
+  canvas.height = Math.max(600, container.clientHeight - 10);
 
   // Dibujar fondo
   ctx.fillStyle = '#f0f0f0';
