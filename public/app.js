@@ -126,12 +126,14 @@ async function loadThermalImage(imageUrl) {
       canvas = document.getElementById('thermalCanvas');
       ctx = canvas.getContext('2d');
 
-      // Dimensionar canvas
-      canvas.width = img.width;
-      canvas.height = img.height;
+      // Dimensionar canvas al tamaño del contenedor (máximo 1000x1000)
+      const maxSize = 1000;
+      const ratio = Math.min(1, maxSize / Math.max(img.width, img.height));
+      canvas.width = img.width * ratio;
+      canvas.height = img.height * ratio;
 
-      // Dibujar imagen
-      ctx.drawImage(img, 0, 0);
+      // Dibujar imagen escalada
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       // Guardar imageData original
       imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -141,6 +143,8 @@ async function loadThermalImage(imageUrl) {
 
       // Mostrar canvas
       canvas.style.display = 'block';
+      canvas.style.maxWidth = '100%';
+      canvas.style.maxHeight = '100%';
       viewerContainer.innerHTML = '';
       viewerContainer.appendChild(canvas);
 
@@ -149,10 +153,11 @@ async function loadThermalImage(imageUrl) {
       canvas.addEventListener('click', handleCanvasClick);
       canvas.addEventListener('mouseleave', handleCanvasMouseLeave);
 
+      console.log(`Canvas renderizado: ${canvas.width}x${canvas.height}`);
       resolve();
     };
     img.onerror = () => reject(new Error('Error cargando imagen'));
-    img.src = imageUrl;
+    img.src = imageUrl + '?' + Date.now(); // Prevenir cache
   });
 }
 
