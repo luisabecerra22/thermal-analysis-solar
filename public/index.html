@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análisis Térmico de Paneles Solares - Renergeia</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <h1>🔬 Análisis Térmico de Paneles Solares</h1>
+        <p>Renergeia - Sistema de Monitoreo Termográfico</p>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Panel Lateral Izquierdo - Carga -->
+      <aside class="sidebar left-sidebar">
+        <div class="upload-section">
+          <h2>Cargar Imagen Térmica</h2>
+          <div class="upload-area" id="uploadArea">
+            <div class="upload-icon">📁</div>
+            <p>Arrastra un archivo TIFF aquí</p>
+            <p class="small">o haz clic para seleccionar</p>
+            <input type="file" id="fileInput" accept=".tif,.tiff" hidden>
+          </div>
+          <div id="loadingSpinner" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Procesando imagen...</p>
+          </div>
+        </div>
+
+        <div class="stats-section" id="statsSection" style="display: none;">
+          <h3>Estadísticas Generales</h3>
+          <div class="stat-item">
+            <span class="stat-label">Total de Paneles</span>
+            <span class="stat-value" id="totalPanels">-</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Temp. Promedio</span>
+            <span class="stat-value" id="avgTemp">-</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Temp. Mínima</span>
+            <span class="stat-value" id="minTemp">-</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Temp. Máxima</span>
+            <span class="stat-value" id="maxTemp">-</span>
+          </div>
+        </div>
+
+        <div class="actions" id="actionsSection" style="display: none;">
+          <button id="exportBtn" class="btn btn-primary">📊 Exportar a Excel</button>
+          <button id="resetBtn" class="btn btn-secondary">🔄 Recargar</button>
+        </div>
+      </aside>
+
+      <!-- Centro - Visualización de Imagen -->
+      <main class="main-area">
+        <div class="viewer-container" id="viewerContainer">
+          <div class="placeholder">
+            <div class="placeholder-icon">🌡️</div>
+            <h3>Cargue una imagen térmica TIFF</h3>
+            <p>La imagen aparecerá aquí con los paneles detectados</p>
+          </div>
+        </div>
+
+        <!-- Canvas para visualización de paneles -->
+        <canvas id="thermalCanvas" style="display: none; cursor: crosshair;"></canvas>
+      </main>
+
+      <!-- Panel Lateral Derecho - Información -->
+      <aside class="sidebar right-sidebar">
+        <div class="info-section">
+          <h3>Información del Panel</h3>
+          <div id="panelInfo" class="panel-info-empty">
+            <p>Pasa el mouse sobre un panel para ver detalles</p>
+          </div>
+        </div>
+
+        <div class="legend-section">
+          <h3>Escala Térmica</h3>
+          <div class="legend">
+            <div class="legend-item">
+              <div class="legend-color" style="background: linear-gradient(to right, #0000ff, #00ffff, #00ff00, #ffff00, #ff6600, #ff0000);"></div>
+              <div class="legend-labels">
+                <span>Frío (20°C)</span>
+                <span>Caliente (80°C)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="search-section">
+          <h3>Buscar Panel</h3>
+          <input type="number" id="panelSearch" placeholder="ID del panel" min="1">
+          <button id="searchBtn" class="btn btn-small">Buscar</button>
+          <div id="searchResult" style="display: none; margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 5px;"></div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© 2024 Renergeia - Análisis Térmico Avanzado</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

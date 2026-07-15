@@ -1,0 +1,347 @@
+:root {
+  --verde: #5cb64a;
+  --verde-osc: #4a9e3a;
+  --azul: #1f3a5f;
+  --azul-claro: #2d5280;
+  --gris-fondo: #f4f6f8;
+  --gris-borde: #e2e8f0;
+  --gris-texto: #475569;
+  --rojo: #dc2626;
+  --sombra: 0 1px 3px rgba(15, 23, 42, 0.08), 0 4px 16px rgba(15, 23, 42, 0.06);
+  --radio: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Arial, sans-serif;
+  background: var(--gris-fondo);
+  color: var(--azul);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--azul-claro);
+}
+
+/* ===== Cabecera ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--gris-borde);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.topbar img {
+  height: 54px;
+  width: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+.topbar .sub {
+  color: var(--gris-texto);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* ===== Contenedores ===== */
+.container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+.container-wide {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 26px;
+  margin-bottom: 18px;
+}
+
+/* ===== Tipografía ===== */
+h1 {
+  font-size: 26px;
+  margin: 0 0 6px;
+  color: var(--azul);
+}
+h2 {
+  font-size: 19px;
+  margin: 0 0 14px;
+  color: var(--azul);
+}
+.muted {
+  color: var(--gris-texto);
+  font-size: 14px;
+}
+
+/* ===== Formularios ===== */
+.field {
+  margin-bottom: 16px;
+}
+.field label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: var(--azul);
+}
+.field input,
+.field select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--gris-borde);
+  border-radius: 9px;
+  font-size: 15px;
+  color: var(--azul);
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(92, 182, 74, 0.15);
+}
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+}
+@media (max-width: 560px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Botones ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, opacity 0.15s;
+}
+.btn-primary {
+  background: var(--verde);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--verde-osc);
+}
+.btn-secondary {
+  background: #fff;
+  color: var(--azul);
+  border: 1px solid var(--gris-borde);
+}
+.btn-secondary:hover {
+  background: var(--gris-fondo);
+}
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-block {
+  width: 100%;
+}
+
+/* ===== Preguntas ===== */
+.pregunta {
+  border: 1px solid var(--gris-borde);
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 14px;
+  background: #fff;
+}
+.pregunta .enunciado {
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--azul);
+}
+.opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid var(--gris-borde);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.opcion:hover {
+  border-color: var(--verde);
+  background: #f7fcf5;
+}
+.opcion input {
+  margin-top: 3px;
+  accent-color: var(--verde);
+}
+.opcion.seleccionada {
+  border-color: var(--verde);
+  background: #f2faef;
+}
+.escala-num {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.escala-num label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--gris-borde);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ===== Alertas ===== */
+.alert {
+  padding: 12px 15px;
+  border-radius: 9px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.alert-error {
+  background: #fef2f2;
+  color: var(--rojo);
+  border: 1px solid #fecaca;
+}
+.alert-info {
+  background: #eff6ff;
+  color: var(--azul-claro);
+  border: 1px solid #bfdbfe;
+}
+
+/* ===== Badges y resultado ===== */
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.badge-ok {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge-fail {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.nota-grande {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* ===== Tabla admin ===== */
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #fff;
+}
+.tabla th,
+.tabla td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--gris-borde);
+  white-space: nowrap;
+}
+.tabla th {
+  background: var(--azul);
+  color: #fff;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+.tabla tbody tr:hover,
+.tabla tr:hover td {
+  background: #f8fafc;
+}
+.tabla-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 18px;
+}
+.toolbar .field {
+  margin-bottom: 0;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.stat {
+  background: #fff;
+  border: 1px solid var(--gris-borde);
+  border-radius: var(--radio);
+  padding: 18px;
+  box-shadow: var(--sombra);
+}
+.stat .num {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--verde);
+}
+.stat .lbl {
+  font-size: 13px;
+  color: var(--gris-texto);
+}
+
+/* ===== Dashboard ===== */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ===== Firma ===== */
+.firma-canvas {
+  width: 100%;
+  max-width: 600px;
+  height: 200px;
+  border: 2px dashed var(--gris-borde);
+  border-radius: 9px;
+  cursor: crosshair;
+  touch-action: none;
+  background: #fff;
+}
