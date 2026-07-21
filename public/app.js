@@ -130,21 +130,45 @@ function createThermalVisualization() {
   canvas.width = Math.max(800, container.clientWidth - 10);
   canvas.height = Math.max(600, container.clientHeight - 10);
 
-  // Dibujar fondo
-  ctx.fillStyle = '#f0f0f0';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // Cargar imagen TIFF procesada como fondo
+  const bgImg = new Image();
+  bgImg.onload = () => {
+    // Dibujar imagen de fondo
+    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
-  // Dibujar paneles
-  panelData.forEach(panel => {
-    const color = getThermalColor(panel.tempAvg);
-    ctx.fillStyle = color;
-    ctx.fillRect(panel.x, panel.y, panel.width, panel.height);
+    // Dibujar paneles con transparencia encima
+    panelData.forEach(panel => {
+      const color = getThermalColor(panel.tempAvg);
+      ctx.fillStyle = color;
+      ctx.globalAlpha = 0.7; // 70% transparencia
+      ctx.fillRect(panel.x, panel.y, panel.width, panel.height);
+      ctx.globalAlpha = 1.0;
 
-    // Borde
-    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-    ctx.lineWidth = 0.5;
-    ctx.strokeRect(panel.x, panel.y, panel.width, panel.height);
-  });
+      // Borde sutil
+      ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(panel.x, panel.y, panel.width, panel.height);
+    });
+
+    console.log(`Canvas creado con imagen de fondo: ${canvas.width}x${canvas.height}`);
+  };
+  bgImg.onerror = () => {
+    console.log('No se pudo cargar imagen de fondo, usando solo paneles');
+    // Fallback: dibujar solo paneles
+    ctx.fillStyle = '#f0f0f0';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    panelData.forEach(panel => {
+      const color = getThermalColor(panel.tempAvg);
+      ctx.fillStyle = color;
+      ctx.fillRect(panel.x, panel.y, panel.width, panel.height);
+
+      ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+      ctx.lineWidth = 0.5;
+      ctx.strokeRect(panel.x, panel.y, panel.width, panel.height);
+    });
+  };
+  bgImg.src = '/thermal.png?' + Date.now();
 
   // Mostrar canvas
   canvas.style.display = 'block';
@@ -155,8 +179,6 @@ function createThermalVisualization() {
   canvas.addEventListener('mousemove', handleCanvasMouseMove);
   canvas.addEventListener('click', handleCanvasClick);
   canvas.addEventListener('mouseleave', handleCanvasMouseLeave);
-
-  console.log(`Canvas creado: ${canvas.width}x${canvas.height}`);
 }
 
 async function loadThermalImage(imageUrl) {
