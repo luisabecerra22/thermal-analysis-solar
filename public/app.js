@@ -130,45 +130,37 @@ function createThermalVisualization() {
   canvas.width = Math.max(800, container.clientWidth - 10);
   canvas.height = Math.max(600, container.clientHeight - 10);
 
-  // Cargar imagen TIFF procesada como fondo
-  const bgImg = new Image();
-  bgImg.onload = () => {
-    // Dibujar imagen de fondo
-    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+  // Dibujar fondo gradiente (simula paisaje)
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+  gradient.addColorStop(0, '#e8f4f8');
+  gradient.addColorStop(0.5, '#d0e8f0');
+  gradient.addColorStop(1, '#b8dce8');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Dibujar paneles con transparencia encima
-    panelData.forEach(panel => {
-      const color = getThermalColor(panel.tempAvg);
-      ctx.fillStyle = color;
-      ctx.globalAlpha = 0.7; // 70% transparencia
-      ctx.fillRect(panel.x, panel.y, panel.width, panel.height);
-      ctx.globalAlpha = 1.0;
+  // Dibujar patrón de terreno sutil
+  ctx.fillStyle = 'rgba(100, 150, 80, 0.05)';
+  for (let i = 0; i < canvas.width; i += 50) {
+    for (let j = 0; j < canvas.height; j += 50) {
+      ctx.fillRect(i, j, 50, 50);
+    }
+  }
 
-      // Borde sutil
-      ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-      ctx.lineWidth = 0.5;
-      ctx.strokeRect(panel.x, panel.y, panel.width, panel.height);
-    });
+  // Dibujar paneles con colores térmicos
+  panelData.forEach(panel => {
+    const color = getThermalColor(panel.tempAvg);
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.85; // Más opaco para que se vea bien
+    ctx.fillRect(panel.x, panel.y, panel.width, panel.height);
+    ctx.globalAlpha = 1.0;
 
-    console.log(`Canvas creado con imagen de fondo: ${canvas.width}x${canvas.height}`);
-  };
-  bgImg.onerror = () => {
-    console.log('No se pudo cargar imagen de fondo, usando solo paneles');
-    // Fallback: dibujar solo paneles
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Borde sutil
+    ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+    ctx.lineWidth = 0.8;
+    ctx.strokeRect(panel.x, panel.y, panel.width, panel.height);
+  });
 
-    panelData.forEach(panel => {
-      const color = getThermalColor(panel.tempAvg);
-      ctx.fillStyle = color;
-      ctx.fillRect(panel.x, panel.y, panel.width, panel.height);
-
-      ctx.strokeStyle = 'rgba(0,0,0,0.1)';
-      ctx.lineWidth = 0.5;
-      ctx.strokeRect(panel.x, panel.y, panel.width, panel.height);
-    });
-  };
-  bgImg.src = '/thermal.png?' + Date.now();
+  console.log(`Canvas creado con fondo degradado: ${canvas.width}x${canvas.height}`);
 
   // Mostrar canvas
   canvas.style.display = 'block';
