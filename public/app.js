@@ -125,10 +125,13 @@ function createThermalVisualization() {
   canvas = document.getElementById('thermalCanvas');
   ctx = canvas.getContext('2d');
 
-  // Dimensionar canvas al tamaño del contenedor
-  const container = document.getElementById('viewerContainer');
-  canvas.width = Math.max(800, container.clientWidth - 10);
-  canvas.height = Math.max(600, container.clientHeight - 10);
+  // Si el canvas no tiene dimensiones configuradas, usar el contenedor
+  if (canvas.width === 0 || canvas.height === 0) {
+    const container = document.getElementById('viewerContainer');
+    const maxSize = 1100; // Máximo para poder ver la grilla completa
+    canvas.width = Math.max(800, Math.min(maxSize, container.clientWidth - 10));
+    canvas.height = Math.max(600, Math.min(maxSize, container.clientHeight - 10));
+  }
 
   // Dibujar fondo gradiente (simula paisaje)
   const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -499,3 +502,66 @@ function resetApp() {
 
 // Inicialización
 console.log('✅ Aplicación de termografía solar cargada');
+
+// Función para cargar datos de prueba automáticamente
+function loadDemoData() {
+  const panelsPerRow = 59;
+  const panelSize = 17;
+  const totalPanels = 3448;
+
+  panelData = [];
+
+  // Generar paneles con temperaturas de prueba
+  for (let i = 0; i < totalPanels; i++) {
+    const row = Math.floor(i / panelsPerRow);
+    const col = i % panelsPerRow;
+    const x = col * panelSize;
+    const y = row * panelSize;
+
+    // Temperaturas variables (para simular un mapa térmico)
+    const baseTemp = 20 + Math.sin(col / 15) * 20 + Math.cos(row / 15) * 15;
+    const temp = Math.max(20, Math.min(80, baseTemp + Math.random() * 10 - 5));
+
+    panelData.push({
+      id: i + 1,
+      x: x,
+      y: y,
+      width: panelSize,
+      height: panelSize,
+      tempAvg: temp,
+      tempMin: temp - 2,
+      tempMax: temp + 2
+    });
+  }
+
+  // Crear y dibujar el canvas
+  canvas = document.getElementById('thermalCanvas');
+  ctx = canvas.getContext('2d');
+
+  const panelsPerSide = 59;
+  canvas.width = panelsPerSide * panelSize;
+  canvas.height = panelsPerSide * panelSize;
+
+  createThermalVisualization();
+
+  // Actualizar estadísticas
+  const temps = panelData.map(p => p.tempAvg);
+  const stats = {
+    totalPanels: panelData.length,
+    avgTemp: (temps.reduce((a, b) => a + b, 0) / temps.length).toFixed(2),
+    minTemp: Math.min(...temps).toFixed(2),
+    maxTemp: Math.max(...temps).toFixed(2)
+  };
+
+  updateStats(stats);
+
+  // Mostrar interfaz
+  uploadArea.style.display = 'none';
+  statsSection.style.display = 'block';
+  actionsSection.style.display = 'flex';
+}
+
+// Cargar datos de prueba automáticamente al iniciar
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(loadDemoData, 500);
+});
