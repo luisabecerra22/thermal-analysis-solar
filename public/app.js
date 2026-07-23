@@ -253,9 +253,9 @@ function applyThermalOverlay() {
 }
 
 function getThermalColor(temp) {
-  // Mapear temperatura (20-80°C) a color (azul a rojo)
-  const minTemp = 20;
-  const maxTemp = 80;
+  // Mapear temperatura (40-70°C) a color (azul a rojo)
+  const minTemp = 40;
+  const maxTemp = 70;
   const normalized = Math.max(0, Math.min(1, (temp - minTemp) / (maxTemp - minTemp)));
 
   // Escala de colores: Azul -> Cian -> Verde -> Amarillo -> Naranja -> Rojo
@@ -511,16 +511,16 @@ function loadDemoData() {
 
   panelData = [];
 
-  // Generar paneles con temperaturas de prueba
+  // Generar paneles con temperaturas de prueba (40-70°C rango típico operativo)
   for (let i = 0; i < totalPanels; i++) {
     const row = Math.floor(i / panelsPerRow);
     const col = i % panelsPerRow;
     const x = col * panelSize;
     const y = row * panelSize;
 
-    // Temperaturas variables (para simular un mapa térmico)
-    const baseTemp = 20 + Math.sin(col / 15) * 20 + Math.cos(row / 15) * 15;
-    const temp = Math.max(20, Math.min(80, baseTemp + Math.random() * 10 - 5));
+    // Temperaturas variables entre 40-70°C
+    const baseTemp = 40 + Math.sin(col / 15) * 15 + Math.cos(row / 15) * 10;
+    const temp = Math.max(40, Math.min(70, baseTemp + Math.random() * 8 - 4));
 
     panelData.push({
       id: i + 1,
